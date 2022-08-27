@@ -50,6 +50,14 @@ class StudentCreateView(CreateView):
     template_name = "fscohort/student_add.html" # default name app/modelname_form.html
     success_url = reverse_lazy("list")
 
+    #! If no number is entered when adding a student, 999 will be assigned by default 👇
+    def form_valid(self, form):
+        self.object = form.save()
+        if not self.object.number:
+            self.object.number = 999
+        self.object.save()
+        return super().form_valid(form)
+
 def student_detail(request,id):
     student = Student.objects.get(id=id)
     context = {
